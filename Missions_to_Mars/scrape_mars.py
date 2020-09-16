@@ -23,9 +23,10 @@ def scrape():
     image_url = 'https://www.jpl.nasa.gov/spaceimages/?search=&category=Mars'
     browser.visit(image_url)     
     browser.find_link_by_partial_text('FULL IMAGE').first.click()
+    browser.find_link_by_partial_text('more info').first.click()
     html = browser.html
     image_soup = BeautifulSoup(html, 'html.parser')
-    f_image = image_soup.find_all('img')[3]['src']
+    f_image = image_soup.select_one("figure.lede a img").get("src")
     featured_image_url = 'https://www.jpl.nasa.gov' +f_image
     scrape_dict.update({'featured_image_url':featured_image_url})
     browser.quit()
@@ -39,7 +40,7 @@ def scrape():
     df.index.name = None
     df.columns=['']
 
-    scrape_dict.update({'table_df':df})
+    scrape_dict.update({'table_df':df.to_dict()})
 
     # Scrape for Mars Hemispheres
     hem_list=[]
@@ -49,17 +50,16 @@ def scrape():
     for item in hem_soup.find_all('h3'):
         hem_list.append(item.text)
     hem_browser = Browser('chrome', **executable_path, headless=False)
-    i=0
     h_image_url = [] 
     for item in hem_list:
+        hem_browser.visit(hem_url)
+        hem_browser.find_link_by_partial_text(item).click()
+        hem_browser.find_link_by_partial_text('Open').click()
         hem_html = hem_browser.html
         hem_soup = BeautifulSoup(hem_html, 'html.parser')
-        hem_browser.visit(hem_url)
-        hem_browser.find_link_by_partial_text(hem_list[i]).click()
-        hem_browser.find_link_by_partial_text('Open').click()
-        h_image = hem_soup.find_all('img')[5]['src']
-        h_image_url.append({"title":hem_list[i], "img_url":'https://astrogeology.usgs.gov'+ h_image})
-        i+=1
+        h_image = hem_soup.select_one("div.wide-image-wrapper img.wide-image").get("src")
+        h_image_url.append({"title":item, "img_url":'https://astrogeology.usgs.gov'+ h_image})
+
 
     scrape_dict.update({'h_image_url':h_image_url})
     hem_browser.quit()
