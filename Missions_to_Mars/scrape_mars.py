@@ -9,11 +9,15 @@ def scrape():
 
     # Scrape the  NASA Mars News Site 
     url = 'https://mars.nasa.gov/news/?page=0&per_page=40&order=publish_date+desc%2Ccreated_at+desc&search=&category=19%2C165%2C184%2C204&blank_scope=Latest'
-    response = requests.get(url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    news_t = soup.find('div', class_="content_title").find('a').text
-    news_p = soup.find('div', class_="rollover_description_inner").text
-
+    url = "https://mars.nasa.gov/news/"
+    executable_path = {'executable_path': 'chromedriver.exe'}
+    browser = Browser('chrome', **executable_path, headless=False)
+    browser.visit(url)
+    response = browser.html
+    soup = BeautifulSoup(response, 'html.parser')
+    news_t = soup.find('li', class_='slide').find('div',class_="content_title").find('a').text
+    news_p = soup.find('li', class_='slide').find('div', class_="rollover_description_inner").text
+    browser.quit()
     scrape_dict.update({'news_t':str(news_t)})
     scrape_dict.update({'news_p':str(news_p)})
 
