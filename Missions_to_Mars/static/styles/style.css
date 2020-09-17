@@ -1,0 +1,29 @@
+body{
+    background-color: aqua;
+
+}
+
+.news{
+    background-color: whitesmoke;
+}
+.main{
+    margin-left: 5%;
+    position: relative;
+    height:450px;
+    max-width: 850px;
+}
+
+figcaption{
+    background-color: whitesmoke;
+
+}
+.comp{
+    padding:5px;
+    position: relative;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}

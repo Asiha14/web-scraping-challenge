@@ -36,11 +36,11 @@ def scrape():
     tables = pd.read_html(table_url)
     df = tables[0]
     df.columns = ['Index', 'Info']
-    df.set_index('Index', inplace=True)
+    df.set_index('Index', inplace=True) 
     df.index.name = None
     df.columns=['']
 
-    scrape_dict.update({'table_df':df.to_dict()})
+    scrape_dict.update({'table_df':df.to_html()})
 
     # Scrape for Mars Hemispheres
     hem_list=[]
